@@ -1,42 +1,42 @@
 # maya_greenCageDeformer
 [Green Coordinates](http://www.wisdom.weizmann.ac.il/~ylipman/GC/gc_techrep.pdf)
-�ɂ��P�[�W�f�t�H�[�}�[��Maya�v���O�C���̃e�X�g�����B
+によるケージデフォーマーのMayaプラグインのテスト実装。
 
-��L�̘_���� [Hans Godard ���̓���](https://vimeo.com/166291982) ���Q�l�ɂ��܂����B
+上記の論文と [Hans Godard 氏の動画](https://vimeo.com/166291982) を参考にしました。
 
-Python API 2.0 �� MPxDeformerNode �N���X���T�|�[�g����Ă��Ȃ������ׁA�� API �Ŏ������Ă��܂��B
+Python API 2.0 で MPxDeformerNode クラスがサポートされていなかった為、旧 API で実装しています。
 
 ![SS](/green_and_wrap.png)
 
-���̃V�F�C�v���ێ�����悤�ȕό`���\�ŁA���ɑe���P�[�W���g�p���Ă��i�����ǂ��ł��B
-���ʁA��̃|�C���g�̕ό`�ʒu���Z�o����̂ɃP�[�W�̑S���_�ƑS�g���C�A���O�����Q�Ƃ����̂ŏd���ł��B
-C++ �ŕ��񉻎�������΂��̉��b���󂯂₷�������m��܂���B
+元のシェイプを維持するような変形が可能で、非常に粗いケージを使用しても品質が良いです。
+反面、一つのポイントの変形位置を算出するのにケージの全頂点と全トライアングルが参照されるので重いです。
+C++ で並列化実装すればその恩恵を受けやすいかも知れません。
 
-##�f�B���N�g���\��
-* scripts: �f�t�H�[�}�[�𐶐����邽�߂̊ȒP�ȃX�N���v�g�B
-* plug-ins: Python�ɂ��v���O�C���B
-* examples: �����ȒP��Maya�V�[���̗�i�o�C���h�ς݁j�B
+## ディレクトリ構成
+* scripts: デフォーマーを生成するための簡単なスクリプト。
+* plug-ins: Pythonによるプラグイン。
+* examples: ごく簡単なMayaシーンの例（バインド済み）。
 
-##�g�p���@
-�f�t�H�[�������ȏ�̃^�[�Q�b�g�V�F�C�v�i�|�C���g�I���ŕ����I�ȃf�t�H�[�����\�j�A
-��̃P�[�W���b�V����p�ӂ��܂��B
+## 使用方法
+デフォームする一つ以上のターゲットシェイプ（ポイント選択で部分的なデフォームも可能）、
+一つのケージメッシュを用意します。
 
-�P�[�W�A�^�[�Q�b�g�̏��ɑI�����A�X�N���v�g
+ケージ、ターゲットの順に選択し、スクリプト
 [scripts/createGreenCageDeformer.py](https://github.com/ryusas/maya_greenCageDeformer/tree/master/scripts/createGreenCageDeformer.py)
-�����s����ƃo�C���h����܂��B
+を実行するとバインドされます。
 
-##��������
-�׋��Ƃ��Ď��������̂ŁA������������͂��܂����A���p���x���̂��̂ł͂���܂���B
+## 制限事項
+勉強として実装したので、そこそこ動作はしますが、実用レベルのものではありません。
 
-* �P�[�W�̓^�[�Q�b�g�V�F�C�v�̊O���ɂ���K�v������܂��B
-  �����P�[�W�̊O�Ƀ^�[�Q�b�g�|�C���g������ƍ������ʂɂȂ�܂��B
+* ケージはターゲットシェイプの外側にある必要があります。
+  もしケージの外にターゲットポイントがあると酷い結果になります。
 
-* Python �����i������ 2.0 �łȂ��j�ł���A���̍œK�������Ă��Ȃ����߁A���삪��Ϗd���ł��B
-  �^�[�Q�b�g�͂����������v�ł����A�P�[�W�ɂ͂����ȒP�Ȍ`�󂵂��d�����Ďg�p�ł��܂���B
+* Python 実装（しかも 2.0 でない）であり、何の最適化もしていないため、動作が大変重いです。
+  ターゲットはそこそこ大丈夫ですが、ケージにはごく簡単な形状しか重すぎて使用できません。
 
-* �^�[�Q�b�g�̑S�|�C���g�̓P�[�W�̑S���_�̉e�����󂯂܂��B
-  ���̂��ߏd���ł����A�ǂ����ʂ𓾂ɂ������������m��܂���B
+* ターゲットの全ポイントはケージの全頂点の影響を受けます。
+  そのため重いですし、良い結果を得にくい部分かも知れません。
 
-* �o�C���h�����A�g���r���[�g�ۑ����Ă��Ȃ��ׁA�V�[�����J�����Ԃ�������܂��i�V�[���J���ۂɍăo�C���h�����j�B
+* バインド情報をアトリビュート保存していない為、シーンを開く時間がかかります（シーン開く際に再バインドされる）。
 
-* �f�t�H�[�}�[�̃E�F�C�g�� envelope �A�g���r���[�g�𖳎����Ă��܂��B
+* デフォーマーのウェイトや envelope アトリビュートを無視しています。
